@@ -1,0 +1,167 @@
+use_debug false
+use_bpm 110
+
+fadein = (ramp *range(0.1, 0.03, 0.02))
+
+elec_play = 1
+bd_play = 1
+hat_play = 1
+cymbal_open_flag = 1
+bass1_play = 1
+bass2_play = 1
+glitchy_play = 0
+synth_play = 1
+
+live_loop :met do
+  sleep 1
+end
+## drum set ##########
+
+kick_cutoff = range(50, 100, 0.5).mirror
+live_loop :elec, sync: :met do
+  if elec_play < 1 then stop end
+  if (spread 1, 4).tick then
+    eleckick_volume = 4
+    sample :elec_soft_kick, amp: fadein.tick* eleckick_volume, decay: 0.5, cutoff: kick_cutoff.look
+  end
+  sleep 0.5
+end
+
+live_loop :bd, sync: :met do
+  
+  if bd_play < 1 then stop end
+  with_fx :slicer, mix: 1 do
+    bd_volume = 2
+    sample :bd_tek, amp: fadein.tick* bd_volume, lpf: 120
+  end
+  sleep 0.5
+end
+
+with_fx :lpf, cutoff: 110, mix: 1 do
+  live_loop :hhc1, sync: :met do
+    if hat_play < 1 then stop end
+    with_fx :hpf, cutoff: 110, amp: 0.8 do
+      sample :drum_cymbal_closed, amp: 0.2, rate: 1
+      sleep 0.25
+      sleep 0.25
+      sample :drum_cymbal_closed, amp: 1.2, rate: 1
+      sleep 0.25
+      sleep 0.25
+    end
+  end
+  
+  live_loop :hhc2, sync: :met do
+    if hat_play < 1 then stop end
+    
+    sleep 0.25
+    sample :drum_cymbal_closed, amp: 0.3, rate: 1.5
+    sleep 0.25
+    sample :drum_cymbal_closed, amp: 0.9, rate: 1.5
+    sleep 0.5
+    
+    sample :drum_cymbal_closed, amp: 0.3, rate: 1.5
+    sleep 0.25
+    sample :drum_cymbal_closed, amp: 0.6, rate: 1.5
+    sleep 0.25
+    sample :drum_cymbal_closed, amp: 0.1, rate: 1.5
+    sleep 0.5
+    
+  end
+  
+  live_loop :cymbal_open, sync: :met do
+    if cymbal_open_flag < 1 then stop end
+    sleep 0.5
+    #sample :drum_cymbal_open, amp: 0.25, beat_stretch: 1.8, finish: 0.125, hpf: 90#, rate: 1.1
+    sleep 0.5
+  end
+end
+
+## bass ################
+
+live_loop :bass, sync: :met do
+  if bass1_play < 1 then stop end
+  
+  with_fx :lpf, cutoff: 130 do
+    with_fx :slicer, mix: 1 do
+      bass_volume = 0.5
+      sample :bass_thick_c, pre_amp: 1, decay: 0.8, amp: fadein.tick* bass_volume
+    end
+  end
+  sleep 2
+end
+
+live_loop :bass_loop, sync: :met  do
+  if bass2_play < 1 then stop end
+  
+  with_fx :reverb do
+    use_synth :fm # :fm :beep
+    use_synth_defaults release: 0.15, sustain: 0.1, amp: 1, attack_level: 1, cutoff: 120
+    
+    note = :c2
+    
+    play note
+    sleep 0.5
+    play note
+    sleep 0.5
+    play note, sustain: 0.5
+    sleep 0.5
+    
+    sleep 0.25
+    
+    play note
+    sleep 0.25
+    play note+2
+    sleep 0.5
+    play note
+    sleep 0.5
+    
+    play note+2
+    sleep 0.5
+    play note
+    sleep 0.5
+  end
+end
+
+live_loop :glitchy, sync: :met do
+  if glitchy_play < 1 then stop end
+  with_fx :reverb do
+    glitchy_volume = 1
+    sample :glitch_bass_g, amp: fadein.tick* glitchy_volume, pan: rrand(1, -1), mix: 1, room: 1, beat_stretch: 4
+  end
+  sleep 4
+end
+
+## synth ################
+
+live_loop :synth1, sync: :met do
+  if synth_play < 1 then stop end
+  
+  r = 4
+  s = 2
+  
+  with_fx :reverb, mix: 0.7, room: 0.3 do
+    synth :dsaw, note: chord(:b3, :m7, invert: -1), release: r, amp: 0.5
+    synth :sine, note: chord(:b2, :m7, invert: -1), release: r, amp: 1
+    synth :fm, note: :gb2, release: r, amp: 1
+    sleep s
+    
+    synth :dsaw, note: chord(:e3, :m7, invert: 0), release: r, amp: 0.5
+    synth :sine, note: chord(:e2, :m7, invert: 0), release: r, amp: 1
+    synth :fm, note: :d2, release: r, amp: 1
+    sleep s
+    
+    synth :dsaw, note: chord(:e3, :m7, invert: -1), release: r, amp: 0.5
+    synth :sine, note: chord(:e2, :m7, invert: -1), release: r, amp: 1
+    synth :fm, note: :d2, release: r, amp: 1
+    sleep s
+    
+    synth :dsaw, note: chord(:d3, :m7, invert: -2), release: r, amp: 0.5
+    synth :sine, note: chord(:d2, :m7, invert: -2), release: r, amp: 1
+    synth :fm, note: :c2, release: r, amp: 1
+    sleep s
+    
+  end
+end
+
+
+
