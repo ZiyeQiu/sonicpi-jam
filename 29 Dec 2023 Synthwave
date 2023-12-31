@@ -1,0 +1,247 @@
+use_bpm 100
+
+melody_play = 0
+ww_play = 0
+string_play = 0
+wave_play = 0
+cymbal_play = 0
+bass_play = 0
+
+a_melody = 1
+a_ww = 0
+a_wave = 1
+with_fx :band_eq do
+  
+  live_loop :met do
+    sleep 1
+  end
+  
+  /##### intro #####/
+  live_loop :ambi, sync: "/live_loop/met" do
+    sample :ambi_lunar_land, sustain: 16, decay: 1, pitch: -1, release: 1
+    sleep 512
+  end
+  
+  /##### Cymbal #####/
+  live_loop :cymbal_begin, sync: "/live_loop/met" do
+    if cymbal_play < 1 then stop end
+    sample :drum_cymbal_hard, amp: 1, cutoff: 130, lpf: 110, hpf: 80, rate: 0.7, sustain: 4
+    sleep 256
+  end
+  
+  /##### root #####/
+  live_loop :root, sync: "/live_loop/met" do
+    use_synth :sine
+    play 53, sustain: 16, release: 0.5, amp: 0.05
+    sleep 16
+  end
+  
+  /######## Drum ########/
+  live_loop :bd, sync: "/live_loop/met" do
+    sample :bd_zum, amp: 3, cutoff: 120, lpf: 100
+    sleep 1
+  end
+  
+  live_loop :snare, sync: "/live_loop/met" do
+    sleep 1
+    sample :drum_snare_soft, amp: 3, cutoff: 120, lpf: 120, hpf: 80, rate: 0.7
+    sleep 1
+  end
+  
+  live_loop :cymbal, sync: "/live_loop/met" do
+    sample :drum_cymbal_closed, amp: 1, lpf: 120, hpf: 118, cutoff: 120
+    sleep 0.25
+  end
+  
+  live_loop :cymbal_ghost, sync: "/live_loop/met" do
+    sleep 1.75
+    sample :drum_cymbal_closed, amp: 2, lpf: 120, hpf: 118, cutoff: 120
+    sleep 0.25
+  end
+  
+  /##### Fill-in #####/
+  live_loop :fill_in, sync: "/live_loop/met" do
+    sleep 30
+    4.times do
+      sample :drum_tom_hi_hard, amp: 4, cutoff: 120, lpf: 120, hpf: 80, rate: 0.7
+      sleep 0.25
+    end
+    2.times do
+      sample :drum_tom_mid_hard,amp: 4, cutoff: 120, lpf: 120, hpf: 80, rate: 0.7
+      sleep 0.25
+    end
+    2.times do
+      sample :drum_tom_lo_hard,amp: 4, cutoff: 120, lpf: 120, hpf: 80, rate: 0.7
+      sleep 0.25
+    end
+    
+    /##### woodwind ######/
+    live_loop :woodwind, sync: "/live_loop/met" do
+      if ww_play < 1 then stop end
+      use_synth :saw
+      play 65, sustain: 0.25, release: 1, amp: 0.4*a_ww, cutoff: 110
+      sleep 0.25
+      play 75, sustain: 0.25, release: 1, amp: 0.4*a_ww, cutoff: 110
+      sleep 0.25
+      play 65, sustain: 0.25, release: 1, amp: 0.4*a_ww, cutoff: 110
+      sleep 0.25
+      play 72, sustain: 0.25, release: 1, amp: 0.4*a_ww, cutoff: 110
+      sleep 0.25
+      
+      play 77, sustain: 0.25, release: 1, amp: 0.4*a_ww, cutoff: 110
+      sleep 0.5
+      play 68, sustain: 0.25, release: 1, amp: 0.4*a_ww, cutoff: 110
+      sleep 0.25
+      play 65, sustain: 0.25, release: 1, amp: 0.4*a_ww, cutoff: 110
+      sleep 0.25
+    end
+    
+    /##### melody ######/
+    live_loop :melody, sync: "/live_loop/met" do
+      if melody_play < 1 then stop end
+      use_synth :prophet
+      play 65, sustain: 0.25, release: 1, amp: 0.8*a_melody, cutoff: 115
+      sleep 0.25
+      play 65, sustain: 0.25, release: 1, amp: 0.8*a_melody, cutoff: 115
+      sleep 0.25
+      play 77, sustain: 0.25, release: 1, amp: 0.8*a_melody, cutoff: 115
+      sleep 0.25
+      play 65, sustain: 0.25, release: 1, amp: 0.8*a_melody, cutoff: 115
+      sleep 0.25
+      
+      play 63, sustain: 0.25, release: 1, amp: 0.8*a_melody, cutoff: 115
+      sleep 0.25
+      play 65, sustain: 0.25, release: 1, amp: 0.8*a_melody, cutoff: 115
+      sleep 0.25
+      play 77, sustain: 0.25, release: 1, amp: 0.8*a_melody, cutoff: 115
+      sleep 0.25
+      play 65, sustain: 0.25, release: 1, amp: 0.8*a_melody, cutoff: 115
+      sleep 0.25
+      
+      play 65, sustain: 0.25, release: 1, amp: 0.8*a_melody, cutoff: 115
+      sleep 0.25
+      play 65, sustain: 0.25, release: 1, amp: 0.8*a_melody, cutoff: 115
+      sleep 0.25
+      play 77, sustain: 0.25, release: 1, amp: 0.8*a_melody, cutoff: 115
+      sleep 0.25
+      play 63, sustain: 0.25, release: 1, amp: 0.8*a_melody, cutoff: 115
+      sleep 0.25
+      
+      play 63, sustain: 0.25, release: 1, amp: 0.8*a_melody, cutoff: 115
+      sleep 0.25
+      play 63, sustain: 0.25, release: 1, amp: 0.8*a_melody, cutoff: 115
+      sleep 0.25
+      play 77, sustain: 0.25, release: 1, amp: 0.8*a_melody, cutoff: 115
+      sleep 0.5
+    end
+    
+    
+    /##### bassline ######/
+    live_loop :bass, sync: "/live_loop/met" do
+      if bass_play < 1 then stop end
+      use_synth :fm
+      7.times do
+        4.times do
+          sleep 0.25
+          play 41, sustain: 0.25, release: 0, amp: 2
+        end
+      end
+      1.times do
+        4.times do
+          sleep 0.25
+          play 48, sustain: 0.25, release: 0, amp: 2
+        end
+      end
+      4.times do
+        4.times do
+          sleep 0.25
+          play 44, sustain: 0.25, release: 0, amp: 2
+        end
+      end
+      3.times do
+        4.times do
+          sleep 0.25
+          play 46, sustain: 0.25, release: 0, amp: 2
+        end
+      end
+      1.times do
+        4.times do
+          sleep 0.25
+          play 48, sustain: 0.25, release: 0, amp: 2
+        end
+      end
+    end
+    
+    live_loop :bass1, sync: "/live_loop/met" do
+      if bass_play < 1 then stop end
+      use_synth :chipbass
+      7.times do
+        sleep 1
+        play 41, sustain: 0.25, release: 0, amp: 1
+      end
+      play 48, sustain: 1, release: 0, amp: 1
+      sleep 1
+      4.times do
+        sleep 1
+        play 44, sustain: 0.25, release: 0, amp: 1
+      end
+      3.times do
+        sleep 1
+        play 46, sustain: 0.25, release: 0, amp: 1
+      end
+      1.times do
+        sleep 1
+        play 48, sustain: 0.25, release: 0, amp: 1
+      end
+    end
+    
+    /######## wave #######/
+    live_loop :wave, sync: "/live_loop/met" do
+      if wave_play < 1 then stop end
+      use_synth :tech_saws
+      play 41, sustain: 8, release: 0, amp: 1*a_wave, cutoff: 120
+      sleep 8
+      play 44, sustain: 3.5, release: 0, amp: 1*a_wave, cutoff: 120
+      sleep 3.5
+      play 46, sustain: 4, release: 0, amp: 1*a_wave, cutoff: 120
+      sleep 4
+      play 51, sustain: 0.5, release: 0, amp: 1*a_wave, cutoff: 120
+      sleep 0.5
+    end
+    
+    /##### string #####/
+    live_loop :string, sync: "/live_loop/met" do
+      if string_play < 1 then stop end
+      use_synth :growl
+      play 96, sustain: 8, release: 0.5, amp: 3, cutoff: 130
+      sleep 8
+      play 89, sustain: 8, release: 0.5, amp: 3, cutoff: 130
+      sleep 8
+    end
+    
+  end
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
